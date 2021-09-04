@@ -1,10 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-const stack = createStackNavigator();
 
 function Home({ navigation }) {
   return (
@@ -21,21 +20,67 @@ function Home({ navigation }) {
 function Details({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text>Details Screen</Text>
+      <Text>This is the Details page. Now you can drill down to a further details page in this Stack of screens</Text>
+      
+      <Button
+        title="Further Details"
+        onPress={() => navigation.navigate('Further Details')}
+      />
+
+      <Button
+        title="Back to the Home Screen"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+}
+
+function DetailsStackScreen({navigation}){
+  return (
+      <Stack.Navigator>
+        <Stack.Screen name="Details Stack Screen" component={Details} />
+        <Stack.Screen name="Further Details" component={FurtherDetails} />
+      </Stack.Navigator>
+  );
+}
+
+function FurtherDetails({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <Text>This is the FURTHER Details page</Text>
+      <Button
+        title="Back to the previous Screen"
+        onPress={() => navigation.goBack()}
+      />
+      <Button
+        title="Back to the HOME Screen"
+        onPress={() => navigation.navigate('Home')}
+      />
+    </View>
+  );
+}
+
+function Search({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <Text>Search Screen</Text>
       <Button title="Go to Home" 
         onPress={() => navigation.navigate('Home')} />
     </View>
   );
 }
 
+const Stack=createStackNavigator();
+const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <stack.Navigator initialRouteName="Home">
-        <stack.Screen name="Home" component={Home} />
-        <stack.Screen name="Details" component={Details} />
-      </stack.Navigator>
-    </NavigationContainer> 
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Details" component={DetailsStackScreen} />
+        <Tab.Screen name="Search" component={Search} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
